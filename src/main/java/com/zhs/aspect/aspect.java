@@ -45,7 +45,6 @@ public class aspect {
     @Around("logPointCut()")
     public Object around(ProceedingJoinPoint point) throws Throwable {
         long beginTime = System.currentTimeMillis();
-        // 执行方法
         Object result = point.proceed();
         // 执行时长(毫秒)
         long time = System.currentTimeMillis() - beginTime;
