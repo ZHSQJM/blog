@@ -22,7 +22,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class SimpleBlogApplication {
 
     public static void main(String[] args) {
-        System.out.println("dadsa");
         SpringApplication.run(SimpleBlogApplication.class, args);
     }
 
