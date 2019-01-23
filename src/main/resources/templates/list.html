@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en"xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"
+      xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+
+    <title>角色管理</title>
+    <meta name="keywords" content="H+后台主题,后台bootstrap框架,会员中心主题,后台HTML,响应式后台">
+    <meta name="description" content="H+是一个完全响应式，基于Bootstrap3最新版本开发的扁平化主题，她采用了主流的左右两栏式布局，使用了Html5+CSS3等现代技术">
+    <link th:href="@{/css/bootstrap.min.css?v=3.4.0}" rel="stylesheet">
+    <link th:href="@{/font-awesome/css/font-awesome.css?v=4.3.0}" rel="stylesheet">
+    <link href="https://cdn.bootcss.com/bootstrap-table/1.11.1/bootstrap-table.min.css" rel="stylesheet">
+    <link th:href="@{/css/animate.css}" rel="stylesheet">
+    <link th:href="@{/css/style.css?v=2.2.0}" rel="stylesheet">
+</head>
+
+<body>
+<div id="wrapper">
+    <div th:replace="common/menu::menu"></div>
+    <div id="page-wrapper" class="gray-bg dashbard-1">
+        <div class="row border-bottom">
+            <div th:replace="common/nav::nav"></div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="wrapper wrapper-content">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="btn-group">
+                                <a  shiro:hasPermission="roles:ad11d" class="btn btn-success" href="#modal-form" data-toggle="modal">
+                                    <i class="fa fa-plus"></i>新增
+                                </a>
+                                <a  shiro:hasPermission="roles:export" class="btn btn-warning" onclick="">
+                                    <i class="fa fa-download"></i> 导出
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <table id="tablelist">
+                    </table>
+                </div>
+                </div>
+            </div>
+            <div th:replace="common/footer::footer"></div>
+        </div>
+    </div>
+</div>
+<div id="modal-form" class="modal fade" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="addroleLabel">添加角色</h4>
+            </div>
+            <div class="modal-body">
+                <form id="add-role" class="form-horizontal form-label-left" novalidate>
+                    <input type="hidden" name="id" id="id">
+                    <div class="item form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12">角色名称: <span class="required">*</span></label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            <input type="text" class="form-control col-md-7 col-xs-12" name="rolename" required="required" placeholder="请输入用户名"/>
+                        </div>
+                    </div>
+                    <div class="item form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" >角色描述:</label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            <input type="text" class="form-control col-md-7 col-xs-12" name="roledesc"  placeholder="请输入昵称"/>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary add-role">保存</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script th:src="@{/js/jquery-2.1.1.min.js}"></script>
+<script th:src="@{/js/jquery.form.js}"></script>
+<script th:src="@{/js/bootstrap.min.js?v=3.4.0}"></script>
+<script th:src="@{/js/plugins/metisMenu/jquery.metisMenu.js}"></script>
+<script th:src="@{/js/plugins/slimscroll/jquery.slimscroll.min.js}"></script>
+<script src="https://cdn.bootcss.com/bootstrap-table/1.11.1/bootstrap-table.min.js"></script>
+<script src="https://cdn.bootcss.com/bootstrap-table/1.11.1/locale/bootstrap-table-zh-CN.min.js"></script>
+<!-- Custom and plugin javascript -->
+<script th:src="@{/js/hplus.js?v=2.2.0}"></script>
+<script th:src="@{/js/plugins/pace/pace.min.js}"></script>
+<script th:src="@{/js/plugins/layer/layer.js}"></script>
+<script th:src="@{/js/zhs.table.js}"></script>
+
+</body>
+<script>
+    function operateFormatter(code, row, index) {
+        var trId = row.id;
+        console.log(trId);
+        var operateBtn = [
+            '<@shiro.hasPermission name="role:edit"><a class="btn btn-xs btn-primary btn-update" data-id="' + trId + '"><i class="fa fa-edit"></i>编辑</a></@shiro.hasPermission>',
+            '<@shiro.hasPermission name="role:delete"><a class="btn btn-xs btn-danger btn-remove" data-id="' + trId + '"><i class="fa fa-trash-o"></i>删除</a></@shiro.hasPermission>',
+            '<@shiro.hasPermission name="role:allotResource"><a class="btn btn-xs btn-info btn-allot" data-id="' + trId + '"><i class="fa fa-circle-thin"></i>分配资源</a></@shiro.hasPermission>'
+        ];
+        return operateBtn.join('');
+    }
+    $(function () {
+        var TableInit = function  TableInit() {
+            var oTableInit = new Object();
+            //初始化Table
+            oTableInit.Init = function () {
+                $('#tablelist').bootstrapTable({
+                    url: '/sys/roles/list',         //请求后台的URL（*）
+                    method:"POST",
+                    dataType: "json",
+                    contentType: "application/x-www-form-urlencoded",
+                    striped:true,//隔行变色
+                    cache:false,  //是否使用缓存
+                    showColumns:false,// 列
+//            toobar:'#toolbar',
+                    pagination: true, //分页
+                    paginationLoop:false,
+                    paginationPreText:'上一页',
+                    paginationNextText:'下一页',
+//            showFooter:true,//显示列脚
+//            showRefresh:true,//显示刷新
+                    showPaginationSwitch:false,//是否显示数据条数选择框
+                    sortable: false,           //是否启用排序
+                    singleSelect: false,
+                    striped: true,
+                    search:false, //显示搜索框
+                    buttonsAlign: "right", //按钮对齐方式
+                    showRefresh:false,//是否显示刷新按钮
+                    sidePagination: "server", //服务端处理分页
+                    pageNumber:1,
+                    pageSize:10,
+                    pageList:[5,10, 25, 50, 100],
+                    undefinedText:'--',
+                    uniqueId: "id", //每一行的唯一标识，一般为主键列
+                    queryParamsType:'',
+                    // queryParams: queryParams,//传递参数（*）
+                    columns: [
+                        {
+                            field: 'id',
+                            title: 'ID'
+                        }, {
+                            field: 'rolename',
+                            title: '名字'
+                        }, {
+                            field: 'roledesc',
+                            title: '描述'
+                        }, {
+                            field: 'createtime',
+                            title: '创建时间'
+                        },
+                        {
+                            field: 'operate',
+                            title: '操作',
+                            formatter: operateFormatter //自定义方法，添加操作按钮
+                        },
+                    ],
+                });
+            };
+            return oTableInit;
+        }
+        //1.初始化Table
+        var oTable = new TableInit();
+        oTable.Init();
+    });
+    function queryParams(params) {
+        var temp = {   //这里的键的名字和控制器的变量名必须一直，这边改动，控制器也需要改成一样的
+            pageNum: params.pageNumber,
+            pageSize: params.pageSize,
+            jobType: jobType,
+            isExpired: isExpired
+        };
+        return temp;
+    };
+</script>
+</html>

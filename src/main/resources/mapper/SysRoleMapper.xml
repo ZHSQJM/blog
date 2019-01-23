@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zhs.dao.SysRoleMapper" >
+  <resultMap id="BaseResultMap" type="com.zhs.entity.SysRole" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="rolename" property="rolename" jdbcType="VARCHAR" />
+    <result column="roledesc" property="roledesc" jdbcType="VARCHAR" />
+    <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
+    <result column="disable" property="disable" jdbcType="INTEGER" />
+    <result column="updatetime" property="updatetime" jdbcType="TIMESTAMP" />
+    <result column="ext1" property="ext1" jdbcType="VARCHAR" />
+    <result column="ext2" property="ext2" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, rolename, roledesc, createtime, disable, updatetime, ext1, ext2
+  </sql>
+
+
+  <!--通过角色名查找角色 -->
+  <select id="findRoleByRoleName" resultType="com.zhs.entity.SysRole">
+    select  * from  sys_role where disable=1 and rolename = #{rolename,jdbcType=VARCHAR}
+  </select>
+
+  <!--通过用户的Id查找角色 -->
+<select id="findRoleByUserId" resultType="com.zhs.entity.SysRole">
+  SELECT
+  *
+  FROM
+  sys_role AS a
+  INNER JOIN sys_user_role AS b ON a.id = b.roleId
+  WHERE
+  b.userId = 2
+  AND b. DISABLE = 1
+</select>
+</mapper>

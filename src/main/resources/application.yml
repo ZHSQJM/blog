@@ -1,0 +1,44 @@
+#使用那个环境   测试(dev)  生产(prod)
+spring:
+  profiles:
+    active: dev
+# thymeleaf
+  thymeleaf:
+   prefix: classpath:/templates/
+   check-template-location: true
+   suffix: .html
+   encoding: UTF-8
+   content-type: text/html
+   mode: HTML5
+   cache: false
+
+#qiniu
+qiniu:
+  accessKey: Sp760x_xY5jLb8HeTnUrUxXQVX52VweKie1QNjis
+  secretKey: lFgRMpXJkXEFg1yUuqouZ0XN0cR228RLdA8O9W1H
+  bucket: telnet-photo
+  bucketUrl: http://zhouhuasheng.cn
+
+#oss
+alioss:
+  bucketName: templevedio
+  endPoint: http://oss-cn-shanghai.aliyuncs.com
+  baseOssUri: https://templevedio.oss-cn-shanghai.aliyuncs.com
+  accessKeyId: LTAI2iaPibcOkvQd
+  accessKeySecret: Rq24Or3IM33VM8fxjfQJC85k9QeZ8A
+  host: https://templevedio.oss-cn-shanghai.aliyuncs.com #图片的访问路径可以是配置好的域名，也可以是oss的域名
+
+#mybatis
+mybatis:
+    type-aliases-package: com.zhs.entity
+    mapper-locations: classpath:mapper/*.xml
+pagehelper:
+    helperDialect: mysql
+    reasonable: true
+    supportMethodsArguments: true
+    params: count=countSql
+#sql日志打印
+logging:
+  level:
+   com.zhs.dao: debug
+

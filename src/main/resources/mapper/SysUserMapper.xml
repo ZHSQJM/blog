@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zhs.dao.SysUserMapper" >
+  <resultMap id="BaseResultMap" type="com.zhs.entity.SysUser" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="username" property="username" jdbcType="VARCHAR" />
+    <result column="password" property="password" jdbcType="VARCHAR" />
+    <result column="phone" property="phone" jdbcType="VARCHAR" />
+    <result column="gender" property="gender" jdbcType="INTEGER" />
+    <result column="trueName" property="truename" jdbcType="VARCHAR" />
+    <result column="birthday" property="birthday" jdbcType="CHAR" />
+    <result column="email" property="email" jdbcType="VARCHAR" />
+    <result column="personalBrief" property="personalbrief" jdbcType="VARCHAR" />
+    <result column="avatarImgUrl" property="avatarimgurl" jdbcType="VARCHAR" />
+    <result column="recentlyLanded" property="recentlylanded" jdbcType="VARCHAR" />
+    <result column="createTime" property="createtime" jdbcType="TIMESTAMP" />
+    <result column="updateTime" property="updatetime" jdbcType="TIMESTAMP" />
+
+    <result column="disable" property="disable" jdbcType="INTEGER" />
+  </resultMap>
+
+  <!--通过用户名查找用户 -->
+  <select id="findUserByUserName" resultType="com.zhs.entity.SysUser">
+    select  * from  sys_user where disable=1 and username = #{username,jdbcType=VARCHAR}
+  </select>
+
+
+  <!--通过自定义的插入方法  返回的是插入数据的主键  即用户的Id。 这个方法只能在主键类型是自增长的时候才能用-->
+  <insert id="insertReturnId" parameterType="com.zhs.entity.SysUser" useGeneratedKeys="true" keyProperty="id" >
+    insert into sys_user ( username, password,
+      phone, gender, trueName,
+      birthday, email, personalBrief,
+      avatarImgUrl, recentlyLanded, createTime,
+      updateTime, disable)
+    values ( #{username,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR},
+      #{phone,jdbcType=VARCHAR}, #{gender,jdbcType=INTEGER}, #{truename,jdbcType=VARCHAR},
+      #{birthday,jdbcType=CHAR}, #{email,jdbcType=VARCHAR}, #{personalbrief,jdbcType=VARCHAR},
+      #{avatarimgurl,jdbcType=VARCHAR}, #{recentlylanded,jdbcType=VARCHAR}, #{createtime,jdbcType=TIMESTAMP},
+      #{updatetime,jdbcType=TIMESTAMP}, #{disable,jdbcType=INTEGER})
+  </insert>
+  <select id="selectUserList" parameterType="com.zhs.entity.SysUser"  resultMap="BaseResultMap">
+    SELECT *  FROM sys_user where disable=1
+    <if test="username != null and username != ''">
+      AND username like concat('%', #{username}, '%')
+    </if>
+    <if test="disable != null and disable != ''">
+      AND disable = #{disable}
+    </if>
+    <if test="phone != null and phone != ''">
+      AND phone like concat('%', #{phone}, '%')
+    </if>
+    <if test="createtime != null and createtime != ''"><!-- 开始时间检索 -->
+      AND date_format(createtime,'%y%m%d') &gt;= date_format(#{createtime},'%y%m%d')
+    </if>
+    order  by  id desc
+  </select>
+
+</mapper>

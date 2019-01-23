@@ -1,0 +1,19 @@
+server:
+  tomcat:
+    uri-encoding: UTF-8
+  port: 80
+
+
+spring:
+  datasource:
+    url: jdbc:mysql://47.94.255.191:3306/zhs-blog?useUnicode=true&characterEncoding=utf8&autoReconnect=true&failOverReadOnly=false
+    username: root
+    password: zhs
+    driverClassName: com.mysql.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+
+
+#sql日志打印
+logging:
+  level:
+   com.zhs.dao: debug

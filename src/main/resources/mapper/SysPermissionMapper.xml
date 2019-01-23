@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zhs.dao.SysPermissionMapper" >
+  <resultMap id="BaseResultMap" type="com.zhs.entity.SysPermission" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="icon" property="icon" jdbcType="VARCHAR" />
+    <result column="perms" property="perms" jdbcType="VARCHAR" />
+    <result column="resUrl" property="resurl" jdbcType="VARCHAR" />
+    <result column="type" property="type" jdbcType="INTEGER" />
+    <result column="parentId" property="parentid" jdbcType="INTEGER" />
+    <result column="sort" property="sort" jdbcType="INTEGER" />
+    <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
+    <result column="updatetime" property="updatetime" jdbcType="TIMESTAMP" />
+    <result column="ext1" property="ext1" jdbcType="VARCHAR" />
+    <result column="ext2" property="ext2" jdbcType="VARCHAR" />
+    <result column="disable" property="disable" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, name, icon, perms, resUrl, type, parentId, sort, createtime, updatetime, ext1, 
+    ext2, disable
+  </sql>
+
+<!-- 根据用户Id查找用户的所有权限-->
+  <select id="loadAllPer" parameterType="java.util.HashMap" resultType="com.zhs.entity.SysPermission">
+  SELECT
+*
+FROM
+	sys_permission m
+LEFT JOIN sys_role_permission rm
+    on m.id=rm.permissionId left join sys_role r
+    on rm.roleId=r.id left join sys_user_role ru
+    on r.id=ru.roleId where ru.userId =#{userId} and m.disable=1
+  </select>
+
+  <select id="loadByRoleId" resultType="com.zhs.entity.SysPermission">
+ select p.*
+        from sys_permission p
+        INNER  JOIN sys_role_permission d on d.permissionId=p.id
+        where d.roleId=#{roleId} and   d.disable=1
+
+  </select>
+  <!-- 根据父节点查找-->
+  <select id="selectByParentId" parameterType="java.util.HashMap" resultType="com.zhs.entity.SysPermission">
+    SELECT
+    id,
+    name,
+    parentId
+    FROM
+    sys_permission
+    WHERE
+    parentId = #{parentId} and  disable=1
+
+  </select>
+</mapper>

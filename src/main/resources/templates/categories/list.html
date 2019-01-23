@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en"xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"
+      xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+
+    <title>类目管理</title>
+    <meta name="keywords" content="H+后台主题,后台bootstrap框架,会员中心主题,后台HTML,响应式后台">
+    <meta name="description" content="H+是一个完全响应式，基于Bootstrap3最新版本开发的扁平化主题，她采用了主流的左右两栏式布局，使用了Html5+CSS3等现代技术">
+    <link th:href="@{/css/bootstrap.min.css?v=3.4.0}" rel="stylesheet">
+    <link th:href="@{/font-awesome/css/font-awesome.css?v=4.3.0}" rel="stylesheet">
+
+    <link th:href="@{/css/animate.css}" rel="stylesheet">
+    <link th:href="@{/css/style.css?v=2.2.0}" rel="stylesheet">
+</head>
+
+<body>
+<div id="wrapper">
+    <div th:replace="common/menu::menu"></div>
+    <div id="page-wrapper" class="gray-bg dashbard-1">
+        <div class="row border-bottom">
+            <div th:replace="common/nav::nav"></div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="wrapper wrapper-content">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="btn-group">
+                                <a  shiro:hasPermission="users:add" class="btn btn-success" href="/article/add.html" data-toggle="modal">
+                                    <i class="fa fa-plus"></i>新增
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="input-group">
+                                <input type="text" placeholder="请输入类目名" class="input-sm form-control" name="categoriesName"> <span class="input-group-btn">
+                                        <button type="button" class="btn btn-sm btn-primary" onclick=""> 搜索</button> </span>
+                            </div>
+                        </div>
+                    </div>
+                        <table class="table table-striped table-hover table-bordered"  id="editable-sample"  >
+                            <thead>
+                            <tr>
+                                <th>类目名称</th>
+                                <th>创建时间</th>
+                                <th >操作</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <th:block th:each="list : ${list}">
+                                <tr th:attr="id=${list.id}">
+                                    <td  th:text="${list.categoriesName}"  ></td>
+                                    <td  th:text="${#dates.format(list.createTime,'yyyy-MM-dd HH:mm:ss')}"  ></td>
+                                    <td><a shiro:hasPermission="users:update" class="btn btn-success btn-xs" href="#modal-form-update" data-toggle="modal" th:onclick="|edituser  (${list.id})|"><i class="fa fa-edit"></i>编辑</a>
+                                        <a shiro:hasPermission="users:delete" class="btn btn-danger  btn-xs" href="#" th:onclick="|removeuser(${list.id})|"><i class="fa fa-trash-o"></i>删除</a>
+                                    </td>
+                                    </td>
+                                </tr>
+                            </th:block>
+                            </tbody>
+                        </table>
+                </div>
+                </div>
+            </div>
+            <div th:replace="common/footer::footer"></div>
+        </div>
+    </div>
+</div>
+
+<script th:src="@{/js/jquery-2.1.1.min.js}"></script>
+<script th:src="@{/js/jquery.form.js}"></script>
+<script th:src="@{/js/bootstrap.min.js?v=3.4.0}"></script>
+<script th:src="@{/js/plugins/metisMenu/jquery.metisMenu.js}"></script>
+<script th:src="@{/js/plugins/slimscroll/jquery.slimscroll.min.js}"></script>
+
+<!-- Custom and plugin javascript -->
+<script th:src="@{/js/hplus.js?v=2.2.0}"></script>
+<script th:src="@{/js/plugins/pace/pace.min.js}"></script>
+<script th:src="@{/js/plugins/layer/layer.js}"></script>
+
+
+<script>
+    function  removeuser(id) {
+        layer.confirm('您确定删除这条数据？', {
+            btn: ['取消','删除'] ,
+            icon: 7
+        }, function(){
+            layer.msg('取消成功', {icon: 1,time:1000});
+        }, function(){
+            $.ajax({
+                type : "POST",
+                url : "delete/"+id,
+                error : function() {
+                    layer.msg('删除失败', {
+                        time: 1000, //1s后自动关闭
+                        icon: 2
+                    });
+                },
+                success : function() {
+                    layer.msg('删除成功',{
+                        icon: 1,
+                        time: 1000,
+                    },function () {
+                        callback:location.reload();
+                    });
+                }
+            });
+        });
+    }
+</script>
+</body>
+
+</html>

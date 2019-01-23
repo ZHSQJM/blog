@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml"
+      xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<nav class="navbar-default navbar-static-side" sysRole="navigation"  th:fragment="menu">
+    <div class="sidebar-collapse">
+        <ul class="nav" id="side-menu">
+            <li class="nav-header">
+                <div class="dropdown profile-element"> <span>
+                            <img alt="image" class="img-circle" th:src="@{/img/profile_small.jpg}" />
+                             </span>
+                    <a data-toggle="dropdown" class="dropdown-toggle" href="index.html#">
+                        <span class="clear"> <span class="block m-t-xs"> <strong class="font-bold"><shiro:principal property = "username"/></strong>
+                             </span> <span class="text-muted text-xs block">超级管理员<b class="caret"></b></span> </span>
+                    </a>
+                    <ul class="dropdown-menu animated fadeInRight m-t-xs">
+                        <li><a href="form_avatar.html">修改头像</a>
+                        </li>
+                        <li><a href="profile.html">个人资料</a>
+                        </li>
+                        <li><a href="contacts.html">联系我们</a>
+                        </li>
+                        <li><a href="mailbox.html">信箱</a>
+                        </li>
+                        <li class="divider"></li>
+                        <li><a href="login.html">安全退出</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="logo-element">
+                    H+
+                </div>
+
+            </li>
+            <li th:each="menu : ${session.menus}">
+                <a href="#">
+                    <i class="fa fa fa-bar-chart-o " th:class="${menu.icon}"></i>
+                     <span th:if="${#lists.isEmpty(menu.list)}" class="nav-label " th:text="${menu.name}" onclick="alert('11')"  th:href="@{${menu.resurl}}">一级菜单</span>
+                    <span th:if="!${#lists.isEmpty(menu.list)}" class="nav-label" th:utext="${menu.name}">一级菜单</span>
+                    <span th:if="!${#lists.isEmpty(menu.list)}"class="fa arrow">
+  <ul class="nav nav-second-level collapse">
+                    <li th:each="cmenu : ${menu.list}">
+                        <a th:if="${#lists.isEmpty(cmenu.list)}" class="menuItem " th:utext="${cmenu.name}"  th:href="@{${cmenu.resurl}}">二级菜单</a>
+                        <a th:if="${not #lists.isEmpty(cmenu.list)}" href="#">[[${cmenu.menuName}]]<span class="fa arrow"></span></a>
+                        <ul th:if="${not #lists.isEmpty(cmenu.list)}" class="nav nav-third-level">
+                            <li th:each="emenu : ${cmenu.list}"><a class="menuItem" th:text="${emenu.name}" th:href="@{${emenu.resurl}}">三级菜单</a></li>
+                        </ul>
+                    </li>
+                </ul>
+                    </span>
+                </a>
+            </li>
+        </ul>
+
+    </div>
+</nav>
+<script>
+
+
+</script>
+</body>
+</html>

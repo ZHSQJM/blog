@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/html" xmlns:th="http://www.w3.org/1999/xhtml"
+      xmlns:shiro="http://www.w3.org/1999/xhtml">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="renderer" content="webkit">
+
+    <title>新增博客</title>
+    <meta name="keywords" content="H+后台主题,后台bootstrap框架,会员中心主题,后台HTML,响应式后台">
+    <meta name="description" content="H+是一个完全响应式，基于Bootstrap3最新版本开发的扁平化主题，她采用了主流的左右两栏式布局，使用了Html5+CSS3等现代技术">
+
+    <link href="/css/bootstrap.min.css?v=3.4.0" rel="stylesheet">
+    <link href="/font-awesome/css/font-awesome.css?v=4.3.0" rel="stylesheet">
+    <link href="/css/animate.css" rel="stylesheet">
+    <link href="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.8/summernote.css" rel="stylesheet">
+   <!-- <link href="/css/plugins/summernote/summernote.css" rel="stylesheet">
+    <link href="/css/plugins/summernote/summernote-bs3.css" rel="stylesheet">-->
+    <link href="/css/style.css?v=2.2.0" rel="stylesheet">
+
+</head>
+
+<div id="wrapper">
+    <div th:replace="common/menu::menu"></div>
+    <div id="page-wrapper" class="gray-bg dashbard-1">
+        <div class="row border-bottom">
+            <div th:replace="common/nav::nav"></div>
+        </div>
+    <div class="row wrapper border-bottom white-bg page-heading">
+            <div class="col-lg-10">
+                <h2>新增博客</h2>
+                <ol class="breadcrumb">
+                    <li>
+                        <a href="index.html">博客管理</a>
+                    </li>
+                    <li>
+                        <a>博客列表</a>
+                    </li>
+                    <li>
+                        <strong>新增博客</strong>
+                    </li>
+                </ol>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="wrapper wrapper-content">
+                    <div class="row">
+                <form id="save_form" action="/article/add" method="post" enctype="multipart/form-data">
+             <div class="col-md-8">
+                    <div class="tile">
+                        <div class="table-responsive">
+                            <div class="form-group">
+                                <input class="form-control" name="title" id="title" type="text"
+                                       placeholder="输入文章标题">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ibox-content no-padding">
+                        <div class="summernote">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="tile">
+                     <div class="form-group row">
+                            <label class="control-label col-md-3">文章类型:</label>
+                            <div class="col-md-9">
+                                <select name="type" class="form-control">
+                                    <optgroup label="请选择">
+                                        <option value="1">原创</option>
+                                        <option value="2">转载</option>
+                                        <option value="3">翻译</option>
+                                    </optgroup>
+                                </select>
+                            </div>
+                        </div>
+
+                       <div class="form-group row">
+                            <label class="control-label col-md-3">文章分类:</label>
+                            <div class="col-md-9">
+                                <select class="form-control"  id="categories" name="categories">
+                                    <option th:each="category:${categories}"
+                                            th:value="${category.id}"
+                                            th:text="${category.categoriesName}"></option>
+                                </select>
+                            </div>
+                        </div>
+                <div class="form-group row">
+                            <label class="control-label col-md-3">文章标签:</label>
+                            <div class="col-md-9">
+                               <input type="text" name="tags" id="tag">
+                            </div>
+                        </div>
+                   <div class="form-group row">
+                            <label class="control-label col-md-3">文章略缩图：</label>
+                            <div class="col-md-9">
+                               <input type="file" name="uploadFile"  accept="image/*" class="form-control">
+                            </div>
+                        </div>
+                        <input type="hidden" name="content" id="content"/>
+                        <input type="hidden" name="status" id="status"/>
+                     <div class="form-group row">
+                            <label class="control-label col-md-3">文章摘要:</label>
+                            <div class="col-md-9">
+                                <textarea class="form-control" name="summary" placeholder="如果为空则自动生成摘要" rows="3"></textarea>
+                            </div>
+                        </div>
+                      <div class="tile-footer">
+                            <button class="btn btn-sm btn-outline-secondary" onclick="save(2)"
+                                    type="submit" shiro:hasPermission="article:add">保存草稿</button>
+                            <button class="btn btn-sm btn-outline-primary pull-right" onclick="save(1)" type="submit"  shiro:hasPermission="article:add" >发布文章</button>
+                        </div>
+                    </div>
+                </div>
+                </form>
+                </div>
+        </div>
+            </div>
+        <div th:replace="common/footer::footer"></div>
+    </div>
+</div>
+
+</div>
+
+<script th:src="@{/js/jquery-2.1.1.min.js}"></script>
+<script th:src="@{/js/jquery.form.js}"></script><!-- SUMMERNOTE -->
+<script src="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.8/summernote.js"></script>
+<script th:src="@{/js/plugins/summernote/summernote-zh-CN.js}"></script>
+<script th:src="@{/js/bootstrap.min.js?v=3.4.0}"></script>
+<script th:src="@{/js/plugins/metisMenu/jquery.metisMenu.js}"></script>
+<script th:src="@{/js/plugins/slimscroll/jquery.slimscroll.min.js}"></script>
+
+
+<!-- Custom and plugin javascript -->
+<script th:src="@{/js/hplus.js?v=2.2.0}"></script>
+<script th:src="@{/js/plugins/pace/pace.min.js}"></script>
+<script th:src="@{/js/plugins/layer/layer.js}"></script>
+
+<!-- Custom and plugin javascript -->
+<script src="/js/hplus.js?v=2.2.0"></script>
+<script src="/js/plugins/pace/pace.min.js"></script>
+
+
+<script>
+
+    function save(status){
+        $("#status").val(status);
+        var sHTML = $('.summernote').summernote('code');
+        $("#content").val(sHTML);
+        var index = layer.load(2, {shade: false}); //0代表加载的风格，支持0-2
+        $("#save_form").ajaxSubmit({
+            type: 'post', // 提交方式 get/post
+            url: 'add', // 需要提交的 url
+            data:$('#save_form').serialize(),
+            success:function(rt) { // data 保存提交后返回的数据，一般为 json 数据
+                layer.close(index);
+                // 此处可对 data 作相关处理
+                if(rt.code=="200"){
+                    layer.msg(rt.message,{
+                        icon: 1,
+                        time: 1000,
+                    },function () {
+                        callback:window.location.href="/article/list.html";
+                    });
+                }else{
+                    layer.msg(rt.message, {
+                        time: 1000, //1s后自动关闭
+                        icon: 2
+                    });
+                }
+
+            }
+
+        });
+    }
+    $(document).ready(function () {
+        $(".summernote").summernote({
+            lang: 'zh-CN',
+            focus:true,
+            maxHeight:null,
+            minHeight:500,
+            callbacks: {
+                onImageUpload: function(file) { //图片默认以二进制的形式存储到数据库，调用此方法将请求后台将图片存储到服务器，返回图片请求地址到前端
+                    //将图片放入Formdate对象中
+                    var formData = new FormData();
+                    var index = layer.load(0, {shade: false}); //0代表加载的风格，支持0-2
+                    //‘picture'为后台获取的文件名，file[0]是要上传的文件
+                    formData.append("file", file[0]);
+                    $.ajax({
+                        type:'post',
+                        url:'/image/upload',
+                        cache: false,
+                        data:formData,
+                        processData: false,
+                        contentType: false,
+                        dataType:'JSON', //请求成功后，后台返回图片访问地址字符串，故此以text格式获取，而不是json格式
+                        success: function(rt) {
+                            $('.summernote').summernote('insertImage',rt.data);
+                            layer.close(index);
+                        },
+                        error:function(){
+                            alert("上传失败");
+                        }
+                    });
+                }
+            }
+        });
+    });
+
+
+</script>
+
+</body>
+
+</html>
